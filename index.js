@@ -4,33 +4,24 @@ const app = express();
 const port = 3000;
 
 app.get('/info', async (req, res) => {
-    const currentTime = new Date().toISOString();
-    const name = 'Your Name'; // Replace with a dynamic name if needed
+    console.log(req.query.batteryLevel)
+    const currentTime = req.query.currentTime;
+    const name = req.query.name;
+    const batteryLevel = req.query.batteryLevel;
+    const platform = req.query.platform;
+    const freeStorage = req.query.freeStorage;
 
-    // Get battery information (not all devices provide this info)
-    let batteryLevel;
-    try {
-        const battery = await si.battery();
-        batteryLevel = battery.percent;
-    } catch (error) {
-        batteryLevel = 'Unavailable';
-    }
-
-    // Get platform information
-    const platform = await si.osInfo().then(data => data.platform);
-
-    // Get free storage space
-    const freeStorage = await si.fsSize().then(disks => disks.reduce((acc, disk) => acc + disk.available, 0) / (1024 * 1024));
+    // Additional server-side processing if needed
 
     res.json({
         currentTime,
         name,
         batteryLevel,
         platform,
-        freeStorage: freeStorage.toFixed(2)
+        freeStorage
     });
 });
 
 app.listen(port, () => {
-    console.log(`Server running on port: ${port}`);
+    console.log(`Server running on port:${port}`);
 });
